@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.springbootdemo.mapper.UserMapper">
+    <insert id="batchInsert">
+        insert into students (name, gender, grade, score, age, createTime, avatar)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name}, #{item.gender}, #{item.grade}, #{item.score}, #{item.age}, now(), #{item.avatar})
+        </foreach>
+    </insert>
+    <update id="updateUser">
+        update students
+        set name       = #{name},
+            age        = #{age},
+            gender     = #{gender},
+            grade      = #{grade},
+            score      = #{score},
+            avatar     = #{avatar},
+            updateTime = now()
+        where id = #{id}
 
-</beans>
+    </update>
+
+    <delete id="deleteUserById">
+        delete
+        from students
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteUserByIds">
+        delete from students where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!-- 分页查询语句 -->
+    <select id="queryList" resultType="com.demo.springbootdemo.pojo.User">
+        select * from students order by students.createTime desc limit #{limit} offset #{offset}
+    </select>
+
+    <!-- 查询总记录数 -->
+    <select id="getTotalUsers" resultType="int">
+        select count(*)
+        from learnjdbc.students
+    </select>
+    <!--新增用户-->
+    <select id="addUser" parameterType="com.demo.springbootdemo.pojo.User">
+        insert into learnjdbc.students (name, gender, grade, score, age, createTime, avatar)
+        values (#{name}, #{gender}, #{grade}, #{score}, #{age}, now(), #{avatar})
+    </select>
+    <select id="queryUserById" resultType="com.demo.springbootdemo.pojo.User">
+        select *
+        from students
+        where id = #{id}
+    </select>
+    <select id="queryUsersForExport" resultType="com.demo.springbootdemo.pojo.User">
+        select *
+        from students order by createTime
+    </select>
+</mapper>
