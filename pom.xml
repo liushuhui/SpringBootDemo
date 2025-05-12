@@ -70,6 +70,11 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version> <!-- 推荐最新稳定版 -->
         </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.16</version>
+        </dependency>
         <!-- Knife4j Spring Boot 3 Starter（适配JDK17+） -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>

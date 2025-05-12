@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.springbootdemo.mapper.MenuMapper">
+    <insert id="addMenu">
+        insert into menu (id, name, parent_id, icon, url, sort, enable, create_time, update_time)
+        values (#{id}, #{name}, #{parentId}, #{icon}, #{url}, #{sort}, #{enable}, now(), now())
+    </insert>
+    <update id="updateMenu">
+        update menu
+        set name = #{name},
+            parent_id = #{parentId},
+            icon = #{icon},
+            url = #{url},
+            sort = #{sort},
+            enable = #{enable},
+            update_time = now()
+        where id = #{id}
+    </update>
+    <delete id="deleteMenuById">
+        delete
+        from menu
+        where id = #{id}
+    </delete>
+
+    <select id="getMenuList" resultType="com.demo.springbootdemo.pojo.Menu">
+        select *
+        from menu
+        where enable = '1'
+        order by menu.sort desc
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getTotalMenus" resultType="java.lang.Integer">
+        select count(*)
+        from menu
+        where enable = '1'
+    </select>
+
+    <select id="getMenuByParentId" resultType="com.demo.springbootdemo.pojo.Menu">
+        select *
+        from menu
+        where enable = '1'
+          and parent_id = #{parentId}
+        order by menu.create_time desc
+    </select>
+    <select id="getMenuById" resultType="com.demo.springbootdemo.pojo.Menu">
+        select *
+        from menu
+        where enable = '1'
+          and id = #{id}
+    </select>
+</mapper>
