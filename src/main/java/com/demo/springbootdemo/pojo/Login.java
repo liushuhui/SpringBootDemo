@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "登录信息")
 public class Login {
+    @Schema(description = "用户id", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String userId;
+
     @Schema(description = "用户名", example = "admin", requiredMode = Schema.RequiredMode.REQUIRED)
     private String username;
 
