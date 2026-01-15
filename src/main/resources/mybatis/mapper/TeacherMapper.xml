@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.springbootdemo.mapper.TeacherMapper">
+    <select id="queryTeachers" resultType="com.demo.springbootdemo.pojo.Teacher">
+        select *
+        from teacher as t
+        order by t.createTime desc
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getTotalTeachers" resultType="int">
+        select count(*)
+        from teacher
+    </select>
+
+    <insert id="addTeacher">
+        insert into teacher (id, name, student, createTime)
+        values (#{id}, #{name}, #{className}, now())
+    </insert>
+
+    <update id="updateTeacher">
+        update teacher
+        set name       = #{name},
+            student    = #{student},
+            updateTime = now()
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTeacherByIds">
+        delete from teacher where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

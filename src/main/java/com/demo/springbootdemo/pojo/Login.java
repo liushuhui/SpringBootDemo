@@ -18,4 +18,7 @@ public class Login {
 
     @Schema(description = "密码", example = "123456", requiredMode = Schema.RequiredMode.REQUIRED)
     private String password;
+
+    @Schema(description = "角色", example = "1: 教师, 2: 学生", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String role;
 }

@@ -1,31 +1,22 @@
 package com.demo.springbootdemo.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
-
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Schema(description = "用户信息")
-public class User {
+@Schema(description = "注册信息")
+public class Register {
     @Schema(description = "用户id", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;
 
     @Schema(description = "用户名", example = "admin", requiredMode = Schema.RequiredMode.REQUIRED)
     private String username;
 
+    @Schema(description = "密码", example = "123456", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String password;
+
     @Schema(description = "角色", example = "1: 教师, 2: 学生", requiredMode = Schema.RequiredMode.REQUIRED)
     private String role;
-
-    public User(Map<String, Object> claims) {
-        if (claims != null) {
-            this.userId = (String) claims.get("userId");
-            this.username = (String) claims.get("username");
-            this.role = (String) claims.get("role");
-        }
-    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.demo.springbootdemo.mapper.UserMapper">
+<mapper namespace="com.demo.springbootdemo.mapper.StudentMapper">
     <insert id="batchInsert">
         insert into students (name, gender, grade, score, age, createTime, avatar)
         values
@@ -34,7 +34,7 @@
         </foreach>
     </delete>
     <!-- 分页查询语句 -->
-    <select id="queryList" resultType="com.demo.springbootdemo.pojo.User">
+    <select id="queryList" resultType="com.demo.springbootdemo.pojo.Student">
         select * from students order by students.createTime desc limit #{limit} offset #{offset}
     </select>
 
@@ -44,16 +44,16 @@
         from learnjdbc.students
     </select>
     <!--新增用户-->
-    <select id="addUser" parameterType="com.demo.springbootdemo.pojo.User">
+    <select id="addUser" parameterType="com.demo.springbootdemo.pojo.Student">
         insert into learnjdbc.students (name, gender, grade, score, age, createTime, avatar)
         values (#{name}, #{gender}, #{grade}, #{score}, #{age}, now(), #{avatar})
     </select>
-    <select id="queryUserById" resultType="com.demo.springbootdemo.pojo.User">
+    <select id="queryUserById" resultType="com.demo.springbootdemo.pojo.Student">
         select *
         from students
         where id = #{id}
     </select>
-    <select id="queryUsersForExport" resultType="com.demo.springbootdemo.pojo.User">
+    <select id="queryUsersForExport" resultType="com.demo.springbootdemo.pojo.Student">
         select *
         from students order by createTime
     </select>

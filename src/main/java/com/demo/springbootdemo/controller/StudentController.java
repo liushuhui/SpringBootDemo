@@ -1,11 +1,11 @@
 package com.demo.springbootdemo.controller;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.read.metadata.ReadSheet;
 import com.demo.springbootdemo.common.ApiResponse;
 import com.demo.springbootdemo.common.ExcludeGlobalExceptionHandler;
-import com.demo.springbootdemo.pojo.User;
-import com.demo.springbootdemo.service.UserService;
+import com.demo.springbootdemo.common.PageResult;
+import com.demo.springbootdemo.pojo.Student;
+import com.demo.springbootdemo.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -20,30 +20,31 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @RestController
 @Tag(name = "学生管理", description = "学生管理相关接口")
-@RequestMapping("/test")
+@RequestMapping("/student")
 //@CrossOrigin(origins = "http://localhost:3000")
 @Slf4j
-public class HelloWorld {
+public class StudentController {
     @Autowired
-    UserService userService;
+    StudentService studentService;
 
     @Operation(summary = "根据ID查询用户信息", description = "根据id查询用户信息")
     @Parameters({
             @Parameter(name = "id", description = "用户id", required = true)
     })
     @GetMapping("/queryUserById")
-    public ApiResponse<User> queryUserById(int id) {
-        return ApiResponse.success(userService.queryUserById(id));
+    public ApiResponse<Student> queryUserById(int id) {
+        return ApiResponse.success(studentService.queryUserById(id));
     }
 
     @Operation(summary = "新增用户", description = "新增用户")
     @PostMapping("/addUser")
-    public ApiResponse<String> addUser(@RequestBody User user) {
-        userService.addUser(user);
+    public ApiResponse<String> addUser(@RequestBody Student student) {
+        studentService.addUser(student);
         return ApiResponse.success("新增成功");
     }
 
@@ -53,19 +54,18 @@ public class HelloWorld {
             @Parameter(name = "pageSize", description = "每页记录数", required = true)
     })
     @GetMapping("/queryList")
-    public ApiResponse<Map<String, Object>> queryList(
+    public ApiResponse<PageResult<Student>> queryList(
             @RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
     ) {
-        Map<String, Object> map = userService.queryList(currentPage, pageSize);
-        log.info("查询结果111 map：" + currentPage);
+        PageResult<Student> map = studentService.queryList(currentPage, pageSize);
         return ApiResponse.success(map);
     }
 
     @Operation(summary = "删除用户", description = "根据id删除用户")
     @DeleteMapping("/deleteUserById")
     public ApiResponse<String> deleteUserById(int id) {
-        return ApiResponse.success(userService.deleteUserById(id));
+        return ApiResponse.success(studentService.deleteUserById(id));
     }
 
     @Operation(summary = "批量删除用户", description = "根据id批量删除用户")
@@ -75,13 +75,13 @@ public class HelloWorld {
     @PostMapping("/deleteUserByIds")
     public ApiResponse<String> deleteUserByIds(@RequestBody Map<String, Object> request) {
         List<Integer> ids = (List<Integer>) request.get("ids");
-        return ApiResponse.success(userService.deleteUserByIds(ids));
+        return ApiResponse.success(studentService.deleteUserByIds(ids));
     }
 
     @Operation(summary = "更新用户", description = "更新用户")
     @PostMapping("/updateUser")
-    public ApiResponse<String> updateUser(@RequestBody User user) {
-        return ApiResponse.success(userService.updateUser(user));
+    public ApiResponse<String> updateUser(@RequestBody Student student) {
+        return ApiResponse.success(studentService.updateUser(student));
     }
 
     //  上传图片
@@ -110,11 +110,11 @@ public class HelloWorld {
             response.reset(); // 重要！清除可能存在的默认设置
             response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");
-            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("用户信息表", "UTF-8") + ".xlsx");
-            List<User> users = userService.queryUsersForExport();
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("用户信息表", StandardCharsets.UTF_8) + ".xlsx");
+            List<Student> students = studentService.queryUsersForExport();
             // 使用 EasyExcel 导出数据
 
-            EasyExcel.write(response.getOutputStream(), User.class).sheet("用户信息表").doWrite(users);
+            EasyExcel.write(response.getOutputStream(), Student.class).sheet("用户信息表").doWrite(students);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -132,7 +132,7 @@ public class HelloWorld {
                 return ApiResponse.error(400, "仅支持 xlsx 格式文件");
             }
 
-            return ApiResponse.success(userService.batchInsert(file));
+            return ApiResponse.success(studentService.batchInsert(file));
         } catch (Exception e) {
             e.printStackTrace();
             return ApiResponse.error(500, e.getMessage());

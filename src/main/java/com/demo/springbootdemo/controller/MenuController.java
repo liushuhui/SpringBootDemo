@@ -46,7 +46,6 @@ public class MenuController {
     @Operation(summary = "添加菜单", description = "添加菜单")
     @PostMapping("/addMenu")
     public ApiResponse<String> addMenu(@RequestBody Menu menu) {
-        log.info("查询结果333 map：{}", menu);
         String addMenuData = menuService.addMenu(menu);
         return ApiResponse.success(addMenuData);
     }

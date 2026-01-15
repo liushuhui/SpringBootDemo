@@ -1,10 +1,7 @@
 package com.demo.springbootdemo.common;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @NoArgsConstructor// 自动生成无参构造方法

@@ -3,6 +3,7 @@ package com.demo.springbootdemo.common;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,8 +12,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
 
 @Hidden
-
+//@ControllerAdvice 拦截所有异常
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
     // 捕获所有异常
     @ExceptionHandler(Exception.class)
@@ -33,10 +35,13 @@ public class GlobalExceptionHandler {
                     throw e; // 直接抛出原始异常
                 }
             }
-            return ApiResponse.error(500, "服务器错误：" + e.getMessage());
+            log.info("全局异常处理:{}", e.getMessage());
+            return ApiResponse.error(500, "服务器错误");
         } catch (Exception ex) {
             return ApiResponse.error(500, "异常处理过程中发生错误:" + ex.getMessage());
         }
+
+
     }
 
 }

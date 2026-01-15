@@ -37,6 +37,7 @@ public class JwtUtil {
         JWT jwt = JWTUtil.parseToken(token);
         return jwt.getPayloads();
     }
+
     /**
      * 验证Token是否有效
      */
@@ -44,9 +45,9 @@ public class JwtUtil {
         if (StrUtil.isBlank(token)) {
             return false;
         }
-        log.info("verifyToken: {}", JWTUtil.verify(token, SECRET_KEY.getBytes(StandardCharsets.UTF_8)));
         return JWTUtil.verify(token, SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
+
     /**
      * 判断Token是否过期
      */
@@ -59,8 +60,27 @@ public class JwtUtil {
         if (exp == null) {
             return false;
         }
+        long expireTimestamp;
+        ;
+        if (exp instanceof Date) {
+            expireTimestamp = ((Date) exp).getTime();
+        } else if (exp instanceof Number) {
+            expireTimestamp = ((Number) exp).longValue();
+            if (expireTimestamp < System.currentTimeMillis() / 1000) {
+                expireTimestamp *= 1000;
+            }
+        } else {
+            try {
+                expireTimestamp = Long.parseLong(exp.toString());
+                if (expireTimestamp < System.currentTimeMillis() / 1000) {
+                    expireTimestamp *= 1000;
+                }
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
 
-        Date expire = new Date((Long) exp * 1000 );
-        return expire.before(new Date());
+        long currentTimestamp = System.currentTimeMillis();
+        return expireTimestamp >= currentTimestamp;
     }
 }

@@ -7,6 +7,7 @@ import com.demo.springbootdemo.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,23 +25,32 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         String token = request.getHeader("Token");
-        if (token != null && JwtUtil.verifyToken(token)) {
-            return true;
+        
+        // 检查Token是否存在
+        if (token == null || token.trim().isEmpty()) {
+            response.setContentType("application/json;charset=UTF-8");
+            String json = objectMapper.writeValueAsString(ApiResponse.error(401, "缺少Token"));
+            response.getWriter().write(json);
+            return false;
         }
+        
+        // 检查Token是否已过期
         if (JwtUtil.isTokenExpired(token)) {
             response.setContentType("application/json;charset=UTF-8");
             String json = objectMapper.writeValueAsString(ApiResponse.error(401, "登录过期，请重新登录"));
             response.getWriter().write(json);
             return false;
-        } else {
+        }
+        
+        // 检查Token是否有效（格式、签名等）
+        if (!JwtUtil.verifyToken(token)) {
             response.setContentType("application/json;charset=UTF-8");
-            try {
-                String json = objectMapper.writeValueAsString(ApiResponse.error(401, "无效的Token"));
-                response.getWriter().write(json);
-            } catch (IOException e) {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "序列化错误");
-            }
+            String json = objectMapper.writeValueAsString(ApiResponse.error(401, "无效的Token"));
+            response.getWriter().write(json);
             return false;
         }
+        
+        // Token有效且未过期，允许通过
+        return true;
     }
 }
