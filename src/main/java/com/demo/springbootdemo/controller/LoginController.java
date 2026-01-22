@@ -30,6 +30,9 @@ public class LoginController {
         if (token == null) {
             return ApiResponse.error(400, "用户名或密码错误");
         }
+        if (token.equals("role")) {
+            return  ApiResponse.error(400, "角色不匹配");
+        }
         return ApiResponse.success(token);
     }
 

@@ -14,7 +14,7 @@ import java.util.Map;
 public class JwtUtil {
     // 密钥
     private static final String SECRET_KEY = "secret";
-    private static final long EXPIRATION_TIME = 600000;
+    private static final long EXPIRATION_TIME = 6000000;
 
     /**
      * 生成Token
@@ -23,7 +23,7 @@ public class JwtUtil {
 
         Map<String, Object> map = new HashMap<>();
         map.put("users", claims);
-        map.put("expire", new Date(System.currentTimeMillis() + EXPIRATION_TIME));
+        map.put("expire", System.currentTimeMillis() + EXPIRATION_TIME);
         return JWTUtil.createToken(map, SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -57,30 +57,24 @@ public class JwtUtil {
         }
         JWT jwt = JWTUtil.parseToken(token);
         Object exp = jwt.getPayload("expire");
+        long currentTimeStamp = System.currentTimeMillis();
+        log.info("exp: {}-{}", exp, currentTimeStamp);
         if (exp == null) {
             return false;
         }
         long expireTimestamp;
-        ;
         if (exp instanceof Date) {
             expireTimestamp = ((Date) exp).getTime();
         } else if (exp instanceof Number) {
             expireTimestamp = ((Number) exp).longValue();
-            if (expireTimestamp < System.currentTimeMillis() / 1000) {
-                expireTimestamp *= 1000;
-            }
         } else {
             try {
                 expireTimestamp = Long.parseLong(exp.toString());
-                if (expireTimestamp < System.currentTimeMillis() / 1000) {
-                    expireTimestamp *= 1000;
-                }
             } catch (NumberFormatException e) {
                 return false;
             }
         }
 
-        long currentTimestamp = System.currentTimeMillis();
-        return expireTimestamp >= currentTimestamp;
+        return expireTimestamp <= currentTimeStamp;
     }
 }

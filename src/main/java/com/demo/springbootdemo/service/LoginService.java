@@ -22,13 +22,12 @@ public class LoginService {
 
     public String login(String username, String password, String role) {
         Login originUser = loginMapper.getPasswordByUsername(username);
+        if (!originUser.getRole().equals(role)) {
+            return "role";
+        }
 
-        if (originUser != null && originUser.getUsername().equals(username) && originUser.getPassword().equals(password)) {
-            Map<String, Object> claims = Map.of(
-                    "username", username,
-                    "userId", originUser.getUserId(),
-                    "role", role
-            );
+        if (originUser.getUsername().equals(username) && originUser.getPassword().equals(password)) {
+            Map<String, Object> claims = Map.of("username", username, "userId", originUser.getUserId(), "role", role);
             return JwtUtil.generateToken(claims);
         }
         return null;

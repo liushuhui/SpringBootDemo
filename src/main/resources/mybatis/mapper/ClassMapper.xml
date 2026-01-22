@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.springbootdemo.mapper.ClassMapper">
+    <insert id="addClass">
+        insert into class (classId, className, headerTeacherId, createTime)
+        values (#{classId}, #{className}, #{headerTeacherId}, now())
+    </insert>
+    <select id="queryClass" resultType="com.demo.springbootdemo.pojo.Class" parameterType="map">
+        select c.classId, c.className, c.headerTeacherId, t.name as headerTeacherName, c.createTime, c.updateTime
+        from class c
+        left join teacher t on c.headerTeacherId = t.id
+        <where>
+            <if test="classId != null">
+                and c.classId = #{classId}
+            </if>
+            <if test="className != null">
+                and c.className like concat('%', #{className}, '%')
+            </if>
+            <if test="headerTeacherName != null">
+                and c.headerTeacherName = #{headerTeacherName}
+            </if>
+            <if test="startTime != null">
+                and c.createTime >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                and c.createTime &lt;= #{endTime}
+            </if>
+        </where>
+        order by createTime desc
+        limit #{limit} offset #{offset}
+    </select>
+    <select id="getTotalClass" resultType="java.lang.Integer">
+        select count(*)
+        from class
+    </select>
+    <select id="getTeacher" resultType="com.demo.springbootdemo.pojo.TeacherInfo">
+        select id, name
+        from teacher
+    </select>
+</mapper>
