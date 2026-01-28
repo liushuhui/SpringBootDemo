@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.springbootdemo.mapper.ClassStudentMapper">
+    <insert id="addStudentToClass">
+        insert into class_student(classId, studentId, invited) values
+        <foreach item="studentId" index="index" collection="studentIds" separator=",">
+            (#{classId}, #{studentId}, #{invited})
+        </foreach>
+    </insert>
+
+    <select id="getTotalClassStudent" resultType="int">
+        select count(*)
+        from class_student
+    </select>
+    <select id="queryClassStudent" resultType="com.demo.springbootdemo.pojo.ClassStudent" parameterType="map">
+        select cs.studentId, cs.classId, c.className, s.name as studentName, cs.invited
+        from class_student cs
+                 left join class c on cs.classId = c.classId
+                 left join students s on cs.studentId = s.id
+    </select>
+    <delete id="deleteClassStudent">
+        delete
+        from class_student
+        where studentId = #{studentId}
+          and classId = #{classId}
+    </delete>
+</mapper>

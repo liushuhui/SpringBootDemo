@@ -57,4 +57,12 @@ public class Student {
     @ExcelProperty(value = "更新时间", index = 8)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
+
+    @Schema(description = "所属班级", example = "一班")
+    @ExcelProperty(value = "所属班级", index = 9)
+    private String className;
+
+    @Schema(description = "是否已加入班级", example = "1")
+    @ExcelProperty(value = "是否已加入班级", index = 10)
+    private String invited = "2";
 }

@@ -35,7 +35,22 @@
     </delete>
     <!-- 分页查询语句 -->
     <select id="queryList" resultType="com.demo.springbootdemo.pojo.Student">
-        select * from students order by students.createTime desc limit #{limit} offset #{offset}
+        select s.id,
+               s.name,
+               s.avatar,
+               s.score,
+               s.gender,
+               s.grade,
+               s.age,
+               s.createTime,
+               s.updateTime,
+               c.className,
+               cs.invited
+        from students s
+                 left join class_student cs on s.id = cs.studentId
+                 left join class c on cs.classId = c.classId
+        order by s.createTime desc
+        limit #{limit} offset #{offset}
     </select>
 
     <!-- 查询总记录数 -->
