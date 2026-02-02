@@ -36,12 +36,12 @@ public class Student {
     @Schema(description = "性别", example = "1")
     @ExcelProperty(value = "性别", index = 4)
     @NotNull(message = "性别不能为空")
-    private int gender;
+    private String gender;
 
     @Schema(description = "年级", example = "1")
     @ExcelProperty(value = "年级", index = 5)
     @NotNull(message = "年级不能为空")
-    private int grade;
+    private String grade;
 
     @Schema(description = "分数", example = "100")
     @ExcelProperty(value = "分数", index = 6)

@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
                     throw e; // 直接抛出原始异常
                 }
             }
-            log.info("全局异常处理:{}", e.getMessage());
+            log.info("全局异常处理:{}", e);
             return ApiResponse.error(500, "服务器错误");
         } catch (Exception ex) {
             return ApiResponse.error(500, "异常处理过程中发生错误:" + ex.getMessage());

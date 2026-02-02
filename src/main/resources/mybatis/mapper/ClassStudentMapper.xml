@@ -12,12 +12,24 @@
         select count(*)
         from class_student
     </select>
+
     <select id="queryClassStudent" resultType="com.demo.springbootdemo.pojo.ClassStudent" parameterType="map">
         select cs.studentId, cs.classId, c.className, s.name as studentName, cs.invited
         from class_student cs
                  left join class c on cs.classId = c.classId
                  left join students s on cs.studentId = s.id
     </select>
+
+    <select id="checkExistingStudents" resultType="map">
+        select cs.studentId, s.name from class_student cs
+        left join students s on cs.studentId = s.id
+        where cs.classId = #{classId}
+        and cs.studentId in
+        <foreach item="studentId" index="index" collection="studentIds" open="(" separator="," close=")">
+            #{studentId}
+        </foreach>
+    </select>
+
     <delete id="deleteClassStudent">
         delete
         from class_student

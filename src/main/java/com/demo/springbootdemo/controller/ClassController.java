@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "班级管理", description = "班级管理相关接口")
@@ -57,10 +58,18 @@ public class ClassController {
     }
 
     @PostMapping("/addStudentToClass")
-    public ApiResponse<Integer> addStudentToClass(@RequestBody Map<String, Object> request) {
+    public ApiResponse<Object> addStudentToClass(@RequestBody Map<String, Object> request) {
         List<Integer> studentIds = (List<Integer>) request.get("studentIds");
         String classId = (String) request.get("classId");
         String invited = (String) request.get("invited");
+        // 查学生是否已在班级中
+        List<Map<String, Object>> existingStudentObj = classStudentService.checkExistingStudents(studentIds, classId);
+
+        if (!existingStudentObj.isEmpty()) {
+            List<String> existingStudentNames = existingStudentObj.stream().map(obj -> obj.get("name").toString()).toList();
+            String nameStr = String.join(", ", existingStudentNames);
+            return ApiResponse.error(400, "以下学生已经邀请，不可重复邀请：" + nameStr);
+        }
         return ApiResponse.success(classStudentService.addStudentToClass(studentIds, classId, invited));
     }
 

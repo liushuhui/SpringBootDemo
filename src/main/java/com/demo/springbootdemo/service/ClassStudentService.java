@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -22,7 +23,12 @@ public class ClassStudentService {
         return new PageResult<>(currentPage, pageSize, total, classStudentList);
     }
 
-    public int addStudentToClass(List<Integer> studentIds, String classId, String invited) {
+
+    public List<Map<String, Object>> checkExistingStudents(List<Integer> studentIds, String classId) {
+        return classStudentMapper.checkExistingStudents(studentIds, classId);
+    }
+
+    public Object addStudentToClass(List<Integer> studentIds, String classId, String invited) {
         return classStudentMapper.addStudentToClass(studentIds, classId, invited);
     }
 
