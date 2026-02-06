@@ -23,6 +23,12 @@ public class Menu {
     @Schema(description = "父菜单ID", example = "0")
     private  String  parentId;
 
+    @Schema(description = "权限标识", example = "system:menu:view")
+    private String permissionCode;
+
+    @Schema(description = "菜单类型", example = "目录,菜单, 按钮")
+    private String menuType;
+
     @Schema(description = "菜单图标", example = "icon")
     private String icon;
 

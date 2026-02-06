@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.springbootdemo.mapper.RoleMapper">
+    <insert id="addRole">
+        insert into roles (roleId, roleName, menuId, createTime)
+        values
+            <foreach collection="menuIds" item="menuId" separator=",">
+                (#{roleId}, #{roleName}, #{menuId}, now())
+            </foreach>
+    </insert>
+
+    <delete id="deleteRoleMenus">
+        DELETE FROM roles WHERE roleId = #{roleId}
+    </delete>
+
+    <resultMap id="queryRoleListMap" type="com.demo.springbootdemo.pojo.Role">
+        <result column="roleId" property="roleId"/>
+        <result column="roleName" property="roleName"/>
+        <result column="createTime" property="createTime"/>
+        <collection property="menuIds" ofType="java.lang.String">
+                <result column="menuId"/>
+        </collection>
+    </resultMap>
+    <select id="queryRoleList" resultMap="queryRoleListMap">
+        select roleId,
+               roleName,
+               menuId,
+               createTime
+        from roles
+        order by createTime
+        limit #{offset}, #{limit}
+    </select>
+    <select id="getTotalUsers" resultType="java.lang.Integer">
+        select count(*) from roles
+    </select>
+</mapper>
